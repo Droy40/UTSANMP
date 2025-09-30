@@ -1,8 +1,10 @@
 package com.example.utsanmp.viewmodel
 
 import android.app.Application
+import android.provider.ContactsContract.Data
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.utsanmp.model.DataUkur
 import com.example.utsanmp.util.FileHelper
@@ -10,6 +12,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class UkurViewModel(app: Application): AndroidViewModel(app) {
+    val dataUkurLD = MutableLiveData<DataUkur>()
         fun saving(dataUkur: DataUkur){
             val filehelper = FileHelper(getApplication())
             val sType = object : TypeToken<List<DataUkur>>() { }.type
