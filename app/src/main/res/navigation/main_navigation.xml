@@ -8,16 +8,16 @@
     <fragment
         android:id="@+id/itemData"
         android:name="com.example.utsanmp.view.DataFragment"
-        android:label="fragment_data"
+        android:label="Data"
         tools:layout="@layout/fragment_data" />
     <fragment
         android:id="@+id/itemUkur"
         android:name="com.example.utsanmp.view.UkurFragment"
-        android:label="fragment_ukur"
+        android:label="Ukur"
         tools:layout="@layout/fragment_ukur" />
     <fragment
         android:id="@+id/itemProfile"
         android:name="com.example.utsanmp.view.ProfilAnakFragment"
-        android:label="fragment_profil_anak"
+        android:label="Profile"
         tools:layout="@layout/fragment_profil_anak" />
 </navigation>
