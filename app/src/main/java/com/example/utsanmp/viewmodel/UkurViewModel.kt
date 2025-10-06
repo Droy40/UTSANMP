@@ -11,31 +11,45 @@ import com.example.utsanmp.util.FileHelper
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class UkurViewModel(app: Application): AndroidViewModel(app) {
+class UkurViewModel(app: Application) : AndroidViewModel(app) {
     val dataUkurLD = MutableLiveData<DataUkur>()
-        fun saving(dataUkur: DataUkur){
-            val filehelper = FileHelper(getApplication())
-            val sType = object : TypeToken<List<DataUkur>>() { }.type
-            val fromFile = filehelper.readFromFile()
-            Log.d("print_file", fromFile)
+    init {
+        clear()
+    }
+    fun save() {
+        val filehelper = FileHelper(getApplication())
+        val sType = object : TypeToken<MutableList<DataUkur>>() {}.type
+        val fromFile = filehelper.readFromFile()
 
-            //bikin arrayList kosong
-            var dataList = mutableListOf<DataUkur>()
-
-            try {
-                //convert data json to ArrayList
-                dataList = Gson().fromJson<List<DataUkur>>(fromFile, sType).toMutableList()
-            }catch (e:Exception){
-
+        // parse existing list safely
+        val dataList: MutableList<DataUkur> = try {
+            if (fromFile.isBlank()) mutableListOf()
+            else {
+                Gson().fromJson(fromFile, sType) ?: mutableListOf()
             }
-
-            //add new parameter or new data to array lis
-            dataList.add(dataUkur)
-
-            //convert data to json
-            val jsonstring = Gson().toJson(dataList)
-
-            filehelper.writeToFile(jsonstring)
-            Log.d("print_file", jsonstring)
+        } catch (e: Exception) {
+            Log.w("UkurViewModel", "Failed to parse existing data file, recreating list", e)
+            mutableListOf()
         }
+        // get current value and add if not null
+        val current = dataUkurLD.value
+        if (current == null) {
+            Log.w("UkurViewModel", "No data in dataUkurLD to save")
+            return
+        }
+
+        dataList.add(current)
+        //convert data to json and persist
+        try {
+            val jsonstring = Gson().toJson(dataList)
+            filehelper.writeToFile(jsonstring)
+        } catch (e: Exception) {
+            Log.e("UkurViewModel", "Failed to write data file", e)
+        }
+    }
+    fun clear(){
+        dataUkurLD.value = DataUkur(null,null,null)
+    }
+
+
 }
