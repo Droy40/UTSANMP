@@ -1,19 +1,26 @@
 package com.example.utsanmp.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.utsanmp.model.DataUkur
-import com.example.utsanmp.util.FileHelper
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.utsanmp.util.buildDb
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class DataViewModel(app: Application) : AndroidViewModel(app) {
+class DataViewModel(app: Application) : AndroidViewModel(app), CoroutineScope {
 
     val dataLD = MutableLiveData<ArrayList<DataUkur>>()
+    val dataLD_List = MutableLiveData<List<DataUkur>>()
 
-    fun refresh(){
+    private var job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
+
+    /*fun refresh(){
         val fileHelper = FileHelper(getApplication())
         // readFromFile may throw or return null/empty; guard against that
         val content = try {
@@ -40,6 +47,12 @@ class DataViewModel(app: Application) : AndroidViewModel(app) {
             // malformed JSON -> log and provide empty list so downstream UI doesn't crash
             Log.e("DataViewModel", "Failed to parse JSON content", e)
             dataLD.value = ArrayList()
+        }
+    }*/
+    fun refresh(){
+        launch {
+            val db = buildDb(getApplication())
+            dataLD_List.postValue(db.dataUkurDao().selectAllDataUkur())
         }
     }
 }

@@ -7,7 +7,8 @@ import com.example.utsanmp.databinding.DataUkurItemBinding
 import com.example.utsanmp.model.DataUkur
 import java.util.ArrayList
 
-class DataListAdapter(val dataList:ArrayList<DataUkur>) : RecyclerView.Adapter<DataListAdapter.DataViewHolder>() {
+class DataListAdapter(val dataList:ArrayList<DataUkur>)
+    : RecyclerView.Adapter<DataListAdapter.DataViewHolder>(){
     class DataViewHolder(var binding: DataUkurItemBinding)
         :RecyclerView.ViewHolder(binding.root)
 

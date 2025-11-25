@@ -1,22 +1,27 @@
 package com.example.utsanmp.viewmodel
 
 import android.app.Application
-import android.provider.ContactsContract.Data
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.utsanmp.model.DataUkur
-import com.example.utsanmp.util.FileHelper
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.utsanmp.util.buildDb
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class UkurViewModel(app: Application) : AndroidViewModel(app) {
+class UkurViewModel(app: Application)
+    : AndroidViewModel(app), CoroutineScope {
     val dataUkurLD = MutableLiveData<DataUkur>()
-    init {
-        clear()
-    }
-    fun save() {
+
+    private var job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
+
+    init { clear() }
+
+    /*fun save() {
         val filehelper = FileHelper(getApplication())
         val sType = object : TypeToken<MutableList<DataUkur>>() {}.type
         val fromFile = filehelper.readFromFile()
@@ -46,7 +51,15 @@ class UkurViewModel(app: Application) : AndroidViewModel(app) {
         } catch (e: Exception) {
             Log.e("UkurViewModel", "Failed to write data file", e)
         }
+    }*/
+
+    fun save(list:List<DataUkur>){
+        launch{
+            val db = buildDb(getApplication())
+            db.dataUkurDao().insertAll(*list.toTypedArray())
+        }
     }
+
     fun clear(){
         dataUkurLD.value = DataUkur(null,null,null)
     }
