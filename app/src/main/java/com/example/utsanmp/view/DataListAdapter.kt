@@ -26,8 +26,7 @@ class DataListAdapter(val dataList:ArrayList<DataUkur>)
         holder.binding.textTinggiBadan.text = dataList[position].tinggiBadan.toString()
     }
 
-    fun updateDataList(
-        newDataList: ArrayList<DataUkur>)
+    fun updateDataList(newDataList: List<DataUkur>)
     {
         dataList.clear()
         dataList.addAll(newDataList)

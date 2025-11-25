@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.utsanmp.databinding.FragmentDataBinding
 import com.example.utsanmp.viewmodel.DataViewModel
 
-class DataFragment : Fragment() {
+class DataFragment : Fragment(){
     private lateinit var binding: FragmentDataBinding
     private lateinit var viewModel: DataViewModel //declare view model nya
     private val dataListAdapter = DataListAdapter(arrayListOf())
@@ -40,7 +40,7 @@ class DataFragment : Fragment() {
     }
 
     fun observeViewModel() {
-        viewModel.dataLD.observe(viewLifecycleOwner, Observer {
+        viewModel.dataLD_List.observe(viewLifecycleOwner, Observer {
             dataListAdapter.updateDataList(it)
         })
     }
