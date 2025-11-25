@@ -1,38 +1,38 @@
 package com.example.utsanmp.viewmodel
 
 import android.app.Application
-import android.content.Context
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.example.utsanmp.model.Profile
+import com.example.utsanmp.util.buildDb
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class ProfilAnakViewModel(application: Application) : AndroidViewModel(application) {
-    private val PREFS_NAME = "profile_preference"
-    private val KEY_NAME = "key_name"
-    private val KEY_DOB = "key_dob"
-    private val KEY_GENDER = "key_gender"
+class ProfilAnakViewModel(application: Application) : AndroidViewModel(application) ,CoroutineScope{
+    private var job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
 
-    private val prefs = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    val nameLD = MutableLiveData<String>()
-    val dobLD = MutableLiveData<String>()
-    val genderLD = MutableLiveData<String>()
+    val profileLD = MutableLiveData<Profile?>()
 
-    init {
-        loadFromPreference()
-    }
-    private fun loadFromPreference() {
-        nameLD.value = prefs.getString(KEY_NAME, "")
-        dobLD.value = prefs.getString(KEY_DOB, "")
-        genderLD.value = prefs.getString(KEY_GENDER, "")
-    }
-    fun saveProfile(_name: String, _dob: String, _gender: String) {
-        prefs.edit(commit = false) {
-            putString(KEY_NAME, _name)
-            putString(KEY_DOB, _dob)
-            putString(KEY_GENDER, _gender)
+    fun refresh() {
+        launch {
+            val db = buildDb(getApplication())
+            val profile = db.profileDao().getProfile()
+            profileLD.postValue(profile)
         }
-        nameLD.value = _name
-        dobLD.value = _dob
-        genderLD.value = _gender
+    }
+
+    fun saveProfile(_name: String, _dob: String, _gender: String) {
+        val existingUuid = profileLD.value?.uuid ?: 0
+        val newProfile = Profile(_name, _dob, _gender).apply { uuid = existingUuid }
+        profileLD.value = newProfile
+        launch{
+            val db = buildDb(getApplication())
+            db.profileDao().insert(newProfile)
+        }
     }
 }
