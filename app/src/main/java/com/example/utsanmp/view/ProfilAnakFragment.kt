@@ -20,10 +20,6 @@ class ProfilAnakFragment : Fragment() {
     private lateinit var binding: FragmentProfilAnakBinding
     private lateinit var viewModel: ProfilAnakViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +31,7 @@ class ProfilAnakFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[ProfilAnakViewModel::class.java]
+        viewModel.refresh()
 
         binding.txtDob.setOnClickListener {
             val cal = Calendar.getInstance()
@@ -72,16 +69,21 @@ class ProfilAnakFragment : Fragment() {
     }
 
     fun obserbeViewModel(){
-        viewModel.nameLD.observe(viewLifecycleOwner,{
-            binding.txtName.setText(it)
-        })
-        viewModel.dobLD.observe(viewLifecycleOwner,{
-            binding.txtDob.setText(it)
-        })
-        viewModel.genderLD.observe(viewLifecycleOwner,{
-            when (it) {
+        viewModel.profileLD.observe(viewLifecycleOwner,{ profile ->
+            // handle null profile (first run)
+            if (profile == null) {
+                binding.txtName.setText("")
+                binding.txtDob.setText("")
+                binding.rgGender.clearCheck()
+                return@observe
+            }
+
+            binding.txtName.setText(profile.nama)
+            binding.txtDob.setText(profile.tanggalLahir)
+            when (profile.jenisKelamin) {
                 "Laki-laki" -> binding.rbMale.isChecked = true
                 "Perempuan" -> binding.rbFemale.isChecked = true
+                else -> binding.rgGender.clearCheck()
             }
         })
     }
