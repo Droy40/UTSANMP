@@ -6,9 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.utsanmp.util.DB_NAME
 
-@Database(entities = [Profile::class], version =  1)
+@Database(entities = [Profile::class, DataUkur::class], version =  1)
 abstract class UkurDatabase: RoomDatabase() {
     abstract fun profileDao(): ProfileDao
+    abstract fun dataUkurDao(): DataUkurDao
 
     companion object {
         @Volatile private var instance: UkurDatabase ?= null
