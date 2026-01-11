@@ -15,7 +15,24 @@ data class DataUkur (
     @ColumnInfo(name="usia")
     var usia: Int?
 ){
-    @PrimaryKey(autoGenerate = true) //Each entity class requires one primary key. Autogenerate (Auto increment (?) ) config set to true to let SQLite generate the unique id
-    var uuid:Int =0
+    @PrimaryKey(autoGenerate = true)
+    var uuid:Int = 0
 
+    var beratBadanStr: String
+        get() = beratBadan?.toString() ?: ""
+        set(value) {
+            beratBadan = value.toIntOrNull()
+        }
+
+    var tinggiBadanStr: String
+        get() = tinggiBadan?.toString() ?: ""
+        set(value) {
+            tinggiBadan = value.toIntOrNull()
+        }
+
+    var usiaStr: String
+        get() = usia?.toString() ?: ""
+        set(value) {
+            usia = value.toIntOrNull()
+        }
 }
