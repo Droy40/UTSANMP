@@ -21,9 +21,8 @@ class DataListAdapter(val dataList:ArrayList<DataUkur>)
     override fun getItemCount() = dataList.size
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
-        holder.binding.textUsia.text = dataList[position].usia.toString()
-        holder.binding.textBeratBadan.text = dataList[position].beratBadan.toString()
-        holder.binding.textTinggiBadan.text = dataList[position].tinggiBadan.toString()
+        holder.binding.dataUkur = dataList[position]
+        holder.binding.executePendingBindings()
     }
 
     fun updateDataList(newDataList: List<DataUkur>)

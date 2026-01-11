@@ -16,10 +16,6 @@ class DataFragment : Fragment(){
     private lateinit var viewModel: DataViewModel //declare view model nya
     private val dataListAdapter = DataListAdapter(arrayListOf())
 
-    companion object {
-        fun newInstance() = DataFragment()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,9 +27,12 @@ class DataFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(DataViewModel::class.java)
+
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+
         viewModel.refresh()
 
-        //--set-up recycle view
         binding.recData.layoutManager = LinearLayoutManager(context)
         binding.recData.adapter = dataListAdapter
         observeViewModel()
