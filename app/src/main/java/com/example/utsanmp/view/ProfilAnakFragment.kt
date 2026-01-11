@@ -7,15 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.Toast
-import com.example.utsanmp.R
 import com.example.utsanmp.viewmodel.ProfilAnakViewModel
 import java.util.Calendar
 import android.app.DatePickerDialog
 import androidx.lifecycle.ViewModelProvider
 import com.example.utsanmp.databinding.FragmentProfilAnakBinding
 import java.util.Locale
+import com.example.utsanmp.model.Profile
 
-class ProfilAnakFragment : Fragment() {
+class ProfilAnakFragment : Fragment() , ProfileListener{
 
     private lateinit var binding: FragmentProfilAnakBinding
     private lateinit var viewModel: ProfilAnakViewModel
@@ -33,6 +33,10 @@ class ProfilAnakFragment : Fragment() {
         viewModel = ViewModelProvider(this)[ProfilAnakViewModel::class.java]
         viewModel.refresh()
 
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+        binding.profileListener = this
+
         binding.txtDob.setOnClickListener {
             val cal = Calendar.getInstance()
             val year = cal.get(Calendar.YEAR)
@@ -42,49 +46,29 @@ class ProfilAnakFragment : Fragment() {
             val dpd = DatePickerDialog(requireContext(), { _: DatePicker, y: Int, m: Int, d: Int ->
                 val monthOneBased = m + 1
                 val formatted = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, monthOneBased, d)
-                binding.txtDob.setText(formatted)
+                viewModel.profileLD.value?.tanggalLahir = formatted
+                viewModel.profileLD.value = viewModel.profileLD.value
             }, year, month, day)
             dpd.show()
         }
-
-        binding.btnSave.setOnClickListener {
-            val name = binding.txtName.text?.toString()?.trim() ?: ""
-            val dob = binding.txtDob.text?.toString()?.trim() ?: ""
-            val selectedId = binding.rgGender.checkedRadioButtonId
-            val gender = when (selectedId) {
-                R.id.rbMale -> "Laki-laki"
-                R.id.rbFemale -> "Perempuan"
-                else -> ""
-            }
-
-            if (name.isEmpty()) {
-                Toast.makeText(requireContext(), "Nama Tidak Boleh Kosong", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            viewModel.saveProfile(name, dob, gender)
-            Toast.makeText(requireContext(), "Profil berhasil disimpan", Toast.LENGTH_SHORT).show()
-        }
-        obserbeViewModel()
+        observeViewModel()
     }
 
-    fun obserbeViewModel(){
+    fun observeViewModel(){
         viewModel.profileLD.observe(viewLifecycleOwner,{ profile ->
-            // handle null profile (first run)
             if (profile == null) {
-                binding.txtName.setText("")
-                binding.txtDob.setText("")
-                binding.rgGender.clearCheck()
-                return@observe
-            }
-
-            binding.txtName.setText(profile.nama)
-            binding.txtDob.setText(profile.tanggalLahir)
-            when (profile.jenisKelamin) {
-                "Laki-laki" -> binding.rbMale.isChecked = true
-                "Perempuan" -> binding.rbFemale.isChecked = true
-                else -> binding.rgGender.clearCheck()
+                viewModel.profileLD.value = Profile("", "", "")
             }
         })
+    }
+
+    override fun onSaveClick() {
+        val name = viewModel.profileLD.value?.nama?.trim() ?: ""
+        if (name.isEmpty()) {
+            Toast.makeText(requireContext(), "Nama Tidak Boleh Kosong", Toast.LENGTH_SHORT).show()
+            return
+        }
+        viewModel.saveProfile()
+        Toast.makeText(requireContext(), "Profil berhasil disimpan", Toast.LENGTH_SHORT).show()
     }
 }

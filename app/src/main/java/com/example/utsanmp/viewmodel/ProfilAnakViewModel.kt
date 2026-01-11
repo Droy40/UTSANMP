@@ -18,21 +18,27 @@ class ProfilAnakViewModel(application: Application) : AndroidViewModel(applicati
 
     val profileLD = MutableLiveData<Profile?>()
 
+    init {
+        profileLD.value = Profile("", "", "")
+    }
+
     fun refresh() {
         launch {
             val db = buildDb(getApplication())
             val profile = db.profileDao().getProfile()
-            profileLD.postValue(profile)
+            profileLD.postValue(profile ?: Profile("", "", ""))
         }
     }
 
-    fun saveProfile(_name: String, _dob: String, _gender: String) {
-        val existingUuid = profileLD.value?.uuid ?: 0
-        val newProfile = Profile(_name, _dob, _gender).apply { uuid = existingUuid }
-        profileLD.value = newProfile
+    fun saveProfile() {
+        val profile = profileLD.value
+        if (profile == null) return
+
         launch{
             val db = buildDb(getApplication())
-            db.profileDao().insert(newProfile)
+            db.profileDao().insert(profile)
+            profileLD.postValue(profile)
         }
+
     }
 }
