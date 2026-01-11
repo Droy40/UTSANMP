@@ -18,83 +18,104 @@
         android:layout_height="match_parent"
         tools:context=".view.ProfilAnakFragment">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilName"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nama">
+                android:padding="24dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtName"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilName"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Nama"
-                    android:inputType="textPersonName"
-                    android:text="@={viewModel.profileLD.nama}" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilDob"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="Tanggal Lahir">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:text="@={viewModel.profileLD.nama}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtDob"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilDob"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
+                    android:layout_marginTop="16dp"
                     android:hint="Tanggal Lahir"
-                    android:text="@={viewModel.profileLD.tanggalLahir}" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tilName">
 
-            <TextView
-                android:id="@+id/tvGenderLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Jenis Kelamin" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtDob"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:text="@={viewModel.profileLD.tanggalLahir}" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <RadioGroup
-                android:id="@+id/rgGender"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:checkedValue="@={viewModel.profileLD.jenisKelamin}">
-
-                <RadioButton
-                    android:id="@+id/rbMale"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tvGenderLabel"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Laki-laki"
-                    android:tag="Laki-laki" />
+                    android:layout_marginTop="24dp"
+                    android:text="Jenis Kelamin"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tilDob" />
 
-                <RadioButton
-                    android:id="@+id/rbFemale"
-                    android:layout_width="wrap_content"
+                <RadioGroup
+                    android:id="@+id/rgGender"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Perempuan"
-                    android:tag="Perempuan" />
-            </RadioGroup>
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    app:checkedValue="@={viewModel.profileLD.jenisKelamin}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvGenderLabel">
 
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Simpan"
-                android:onClick="@{() -> profileListener.onSaveClick()}" />
+                    <RadioButton
+                        android:id="@+id/rbMale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="Laki-laki"
+                        android:text="Laki-laki" />
 
-        </LinearLayout>
+                    <RadioButton
+                        android:id="@+id/rbFemale"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tag="Perempuan"
+                        android:text="Perempuan" />
+                </RadioGroup>
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:onClick="@{() -> profileListener.onSaveClick()}"
+                    android:text="Simpan"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rgGender" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
 
     </FrameLayout>
 </layout>
