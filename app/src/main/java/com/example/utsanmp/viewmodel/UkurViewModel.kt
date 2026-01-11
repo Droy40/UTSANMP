@@ -27,6 +27,7 @@ class UkurViewModel(app: Application)
             val db = buildDb(getApplication())
             db.dataUkurDao().insertAll(data)
         }
+        clear()
     }
 
     fun clear(){

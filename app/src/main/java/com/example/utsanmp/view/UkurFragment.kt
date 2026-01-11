@@ -49,7 +49,5 @@ class UkurFragment : Fragment(), UkurListener {
         }
         viewModel.save()
         Snackbar.make(binding.root, "Data berhasil disimpan", Snackbar.LENGTH_SHORT).show()
-        viewModel.clear()
-        findNavController().popBackStack()
     }
 }
